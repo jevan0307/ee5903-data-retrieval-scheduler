@@ -3,7 +3,8 @@ let path = require('path')
 let moment = require('moment')
 let nocache = require('nocache')
 let fs = require('fs')
-var secureRandom = require('secure-random')
+let secureRandom = require('secure-random')
+let { exec } = require('child_process')
 
 let bandwidthMonitor = setInterval(() => {
     exec('ifconfig eth0', (err, stdout, stderr) => {
