@@ -1,0 +1,27 @@
+{
+  "name": "ee5903-data-retrieval-scheduler",
+  "version": "1.0.0",
+  "description": "EE5903 - Simulation of real-time data retrieval scheduler",
+  "main": "index.js",
+  "dependencies": {
+    "await-delay": "^1.0.0",
+    "express": "^4.16.3",
+    "moment": "^2.22.0",
+    "nocache": "^2.0.0",
+    "secure-random": "^1.1.1",
+    "superagent": "^3.8.2",
+    "superagent-throttle": "^0.2.5",
+    "yargs": "^11.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "client": "node client/index.js",
+    "server": "node server/index.js"
+  },
+  "author": "Jevan Chan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jevan0307/ee5903-data-retrieval-scheduler/issues"
+  },
+  "homepage": "https://github.com/jevan0307/ee5903-data-retrieval-scheduler#readme"
+}
