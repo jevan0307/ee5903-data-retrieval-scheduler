@@ -1,51 +1,85 @@
-let superagent = require('superagent')
-let delay = require('await-delay')
-let Throttle = require('superagent-throttle')
-let { exec } = require('child_process')
+let express = require('express')
+let bwMonitor = require('../lib/bandwidthMonitor')
 
-// let bandwidthMonitor = setInterval(() => {
-//     exec('ifconfig enp0s3', (err, stdout, stderr) => {
-//         if (err) {
-//             console.error(err)
-//             process.exit(-1)
-//         }
-//         let RXBytes = stdout.match(/RX bytes:(\d*) \(\d*.\d* [A-Z]*\)/i)[1]
-//         let TXBytes = stdout.match(/TX bytes:(\d*) \(\d*.\d* [A-Z]*\)/i)[1]
-//         console.log(parseInt(RXBytes)/1024/1024, parseInt(TXBytes)/1024/1024)
-//     })
-// }, 1000)
+let app = express()
 
-let request = superagent.agent()
+app.get('/request', (req, res) => {
+    let ServerIP = req.param('ip')
+    let ServerPort = req.param('port')
+    let RequestN = req.param('n')
+    let Timeout = req.param('timeout')
+    let DataSize = req.param('size')
 
-let ip = '172.18.0.2'
-let port = '8000'
+    let agent = superagent.agent()
+    let dataRequests = []
+    let requestLog = []
 
-Promise.all([
-    request
-        .get(`http://${ip}:${port}/`)
-        .then(() => {
-            console.log(1+'finish')
-        }),
-    request
-        .get(`http://${ip}:${port}/`)
-        .then(() => {
-            console.log(2+'finish')
-        }),
-    request
-        .get(`http://${ip}:${port}/`)
-        .then(() => {
-            console.log(3+'finish')
-        }),
-    request
-        .get(`http://${ip}:${port}/`)
-        .then(() => {
-            console.log(4+'finish')
-        }),
-    request
-        .get(`http://${ip}:${port}/`)
-        .then(() => {
-            console.log(5+'finish')
+    for (let i = 0; i < RequestN; i++) {
+        requestLog.push({
+            start: -1,
+            end: -1
         })
-]).then(() => {
-    // clearInterval(bandwidthMonitor)
+
+        dataRequests.push(
+            agent
+                .get(`http://${ServerIP}:${ServerPort}/data`)
+                .query({ size: DataSize })
+                .buffer(true)
+                .timeout({
+                    deadline: Timeout,
+                })
+                .then(() => {
+                    requestLog[i].end = new Date()
+                })
+        )
+    }
+
+    startTime = new Date()
+    for (let i = 0; i < RequestN; i++) {
+        requestLog[i].start = startTime
+    }
+    Promise
+        .all(dataRequests)
+        .then(() => {
+            res.send({
+                log: requestLog
+            })
+        })
+        .catch((err) => {
+            console.error(err)
+            res.send({
+                log: requestLog
+                error: err
+            })
+        })
+})
+
+app.get('/bandwidth', (req, res) => {
+    let Action = req.param('action')
+    let Interval = req.param('inverval') || 1000
+
+    if (Action === 'start') {
+        bwMonitor.start(Interval)
+        res.send({ success: true })
+    } else if (Action === 'stop') {
+        bwMonitor.stop()
+        res.send({ success: true })
+    } else if (Action === 'reset') {
+        bwMonitor.reset()
+        res.send({ success: true })
+    } else if (Action === 'log') {
+        res.send({
+            log: bwMonitor.log
+        })
+    }
+})
+
+app.get('/ping', (req, res) => {
+    res.send({ alive: true })
+})
+
+app.listen('7070', (err) => {
+    if (err)
+        throw(err)
+    console.log('Client is listening on port 7070')
 })

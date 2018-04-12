@@ -1,35 +1,44 @@
 let express = require('express')
 let path = require('path')
-let moment = require('moment')
 let nocache = require('nocache')
-let fs = require('fs')
 let secureRandom = require('secure-random')
-let { exec } = require('child_process')
-
-let bandwidthMonitor = setInterval(() => {
-    exec('ifconfig eth0', (err, stdout, stderr) => {
-        if (err) {
-            console.error(err)
-            process.exit(-1)
-        }
-        let RXBytes = stdout.match(/RX bytes:(\d*) \(\d*.\d* [A-Z]*\)/i)[1]
-        let TXBytes = stdout.match(/TX bytes:(\d*) \(\d*.\d* [A-Z]*\)/i)[1]
-        console.log(parseInt(RXBytes)/1024/1024, parseInt(TXBytes)/1024/1024)
-    })
-}, 1000)
+let bwMonitor = require('../lib/bandwidthMonitor')
 
 app = express()
 
 app.use(nocache())
-app.use(express.static('public'))
 
-var data = secureRandom.randomBuffer(1024*1024*10)
+app.get('/data', (req, res) => {
+    let dataSize = req.param('size')
 
-app.get('/', (req, res) => {
-    console.log('Get req:', moment().format())
+    let data = secureRandom.randomBuffer(dataSize)
     res.send(data)
 })
 
+app.get('/bandwidth', (req, res) => {
+    let Action = req.param('action')
+    let Interval = req.param('inverval') || 1000
+
+    if (Action === 'start') {
+        bwMonitor.start(Interval)
+        res.send({ success: true })
+    } else if (Action === 'stop') {
+        bwMonitor.stop()
+        res.send({ success: true })
+    } else if (Action === 'reset') {
+        bwMonitor.reset()
+        res.send({ success: true })
+    } else if (Action === 'log') {
+        res.send({
+            log: bwMonitor.log
+        })
+    }
+})
+
+app.get('/ping', (req, res) => {
+    res.send({ alive: true })
+})
+
 app.listen('8000', () => {
-    console.log('Server listening on port 8000')
+    console.log('Server is listening on port 8080')
 })
