@@ -1,0 +1,7 @@
+10240 -> 10Mbps -> 2.5 MBps
+8192 -> 8Mbps -> 1MBps
+
+sudo ../wondershaper/wondershaper -c -a enp0s3
+
+sudo ../wondershaper/wondershaper -a enp0s3 -d 20480 -u 20480
+sudo ../wondershaper/wondershaper -a enp0s3 -d 8192 -u 8192

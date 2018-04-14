@@ -17,7 +17,8 @@
   "devDependencies": {},
   "scripts": {
     "client": "node client/index.js",
-    "server": "node server/index.js"
+    "server": "node server/server.js",
+    "server:scheduler": "node server/server-scheduler.js"
   },
   "author": "Jevan Chan",
   "license": "ISC",

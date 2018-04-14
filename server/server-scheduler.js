@@ -3,16 +3,21 @@ let path = require('path')
 let nocache = require('nocache')
 let secureRandom = require('secure-random')
 let bwMonitor = require('../lib/BandwidthMonitor')
-var endMw = require('express-end')
 
 app = express()
 
-// app.use(endMw)
 app.use(nocache())
 
 let scheduler = {
     isSending: false,
     requests: [],
+    calcLambda: function (k, o, T0) {
+        let n = 0
+        for (let i = 0; i <= k; i++) {
+            n += Math.sqrt(this.request[i].pri)
+        }
+        return Math.pow(n/(T0+k+1), 2)
+    },
     maxPrice: function() {
         return this.requests[0].pri
     },
@@ -29,9 +34,19 @@ let scheduler = {
     },
     send: function() {
         if (!this.isSending && this.requests.length > 0) {
-            let res = this.pop()
+            let k = this.requests.length - 1
+
+            while (this.requests[k].pri < calcLambda(k, T0)) {
+                k = k - 1
+            }
+
             this.isSending = true
-            res.res.send(res.data)
+            this.requests.forEach((req, i) => {
+                if (i <= k) {
+                    req.res.send(req.data)
+                }
+            })
+            this.requests.splice(0, this.requests.length)
             console.log('Sending')
         }
     }
