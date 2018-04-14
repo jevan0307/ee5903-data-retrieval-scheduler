@@ -17,7 +17,7 @@ let scheduler = {
         return this.requests[0].pri
     },
     pop: function () {
-        return this.requests.splice(0, 1)
+        return this.requests.splice(0, 1)[0]
     },
     push: function (res, pri, data) {
         this.requests.push({
