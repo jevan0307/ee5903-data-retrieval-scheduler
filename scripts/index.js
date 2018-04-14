@@ -27,7 +27,7 @@ let main = async () => {
             .query({ port: serverPort })
             .query({ n: 3 })
             .query({ timeout: 20000 })
-            .query({ size: 1024*1024*1.33 })
+            .query({ size: 1024*1024*3 })
             .then((result) => {
                 results.push(result)
             })
