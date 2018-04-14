@@ -44,7 +44,7 @@ app.get('/data', (req, res, next) => {
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
 
-    while (pri < scheduler.maxPrice() + 1e-7) {
+    while (pri < scheduler.maxPrice() - 1e-7) {
         console.log(pri, scheduler.maxPrice())
     }
 
