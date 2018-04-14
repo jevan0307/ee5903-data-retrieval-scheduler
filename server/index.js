@@ -39,10 +39,10 @@ app.get('/bandwidth', (req, res) => {
     }
 })
 
-app.get('/ping', (req, res) => {
+app.get('/alive', (req, res) => {
     res.send({ alive: true })
 })
 
-app.listen('8000', () => {
+app.listen('8080', () => {
     console.log('Server is listening on port 8080')
 })

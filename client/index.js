@@ -79,7 +79,7 @@ app.get('/bandwidth', (req, res) => {
     }
 })
 
-app.get('/ping', (req, res) => {
+app.get('/alive', (req, res) => {
     res.send({ alive: true })
 })
 
