@@ -48,7 +48,7 @@ app.get('/request', (req, res) => {
         .catch((err) => {
             console.error(err)
             res.send({
-                log: requestLog
+                log: requestLog,
                 error: err
             })
         })
