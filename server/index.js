@@ -30,7 +30,7 @@ app.get('/bandwidth', (req, res) => {
         res.send({ success: true })
     } else if (Action === 'log') {
         res.send({
-            log: bwMonitor.log
+            log: bwMonitor.log()
         })
     } else {
         res.send({
