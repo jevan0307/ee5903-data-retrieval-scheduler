@@ -11,25 +11,18 @@ app.use(nocache())
 let scheduler = {
     isSending: false,
     requests: [],
+    maxPrice: function() {
+        return requests[0].pri
+    },
     pop: function () {
-        this.requests.sort((a, b) => b.pri - a.pri)
         return this.requests.splice(0, 1)
     },
-    push: function (res, pri, data) {
+    push: function (res, pri) {
         this.requests.push({
             res: res,
             pri: pri,
-            data: data
         })
-    },
-    send: function () {
-        if (this.requests.length > 0　&& !this.isSending) {
-            this.isSending = true
-            let req = this.pop()
-            req.res.send(req.data)
-            this.isSending = false
-            this.send()
-        }
+        this.requests.sort((a, b) => b.pri - a.pri)
     }
 }
 
@@ -39,8 +32,10 @@ app.get('/data', (req, res) => {
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
 
-    scheduler.push(res, pri, data)
-    scheduler.send()
+    scheduler.push(res, pri)
+    while (pri > scheduler.maxPrice() + 1e-7);
+    scheduler.pop()
+    res.send(data)
 })
 
 app.get('/bandwidth', (req, res) => {
