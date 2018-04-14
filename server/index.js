@@ -7,7 +7,7 @@ var endMw = require('express-end')
 
 app = express()
 
-app.use(endMw)
+// app.use(endMw)
 app.use(nocache())
 
 let scheduler = {
