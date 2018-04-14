@@ -12,7 +12,7 @@ let scheduler = {
     isSending: false,
     requests: [],
     maxPrice: function() {
-        return requests[0].pri
+        return this.requests[0].pri
     },
     pop: function () {
         return this.requests.splice(0, 1)
