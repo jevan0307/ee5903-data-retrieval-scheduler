@@ -43,13 +43,13 @@ app.get('/request', (req, res) => {
     Promise
         .all(dataRequests)
         .then(() => {
-            res.send({
+            res.json({
                 log: requestLog
             })
         })
         .catch((err) => {
             console.error(err)
-            res.send({
+            res.json({
                 log: requestLog,
                 error: err
             })
@@ -62,26 +62,26 @@ app.get('/bandwidth', (req, res) => {
 
     if (Action === 'start') {
         bwMonitor.start(Interval)
-        res.send({ success: true })
+        res.json({ success: true })
     } else if (Action === 'stop') {
         bwMonitor.stop()
-        res.send({ success: true })
+        res.json({ success: true })
     } else if (Action === 'reset') {
         bwMonitor.reset()
-        res.send({ success: true })
+        res.json({ success: true })
     } else if (Action === 'log') {
-        res.send({
+        res.json({
             log: bwMonitor.log()
         })
     } else {
-        res.send({
+        res.json({
             error: 'Invalid parameter'
         })
     }
 })
 
 app.get('/alive', (req, res) => {
-    res.send({ alive: true })
+    res.json({ alive: true })
 })
 
 app.listen('7070', (err) => {

@@ -12,7 +12,7 @@ app.get('/data', (req, res) => {
     let dataSize = req.param('size')
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
-    res.send(data)
+    res.json(data)
 })
 
 app.get('/bandwidth', (req, res) => {
@@ -21,26 +21,26 @@ app.get('/bandwidth', (req, res) => {
 
     if (Action === 'start') {
         bwMonitor.start(Interval)
-        res.send({ success: true })
+        res.json({ success: true })
     } else if (Action === 'stop') {
         bwMonitor.stop()
-        res.send({ success: true })
+        res.json({ success: true })
     } else if (Action === 'reset') {
         bwMonitor.reset()
-        res.send({ success: true })
+        res.json({ success: true })
     } else if (Action === 'log') {
-        res.send({
+        res.json({
             log: bwMonitor.log()
         })
     } else {
-        res.send({
+        res.json({
             error: 'Invalid parameter'
         })
     }
 })
 
 app.get('/alive', (req, res) => {
-    res.send({ alive: true })
+    res.json({ alive: true })
 })
 
 app.listen('8080', () => {
