@@ -14,7 +14,7 @@ let scheduler = {
     calcLambda: function (k, T0) {
         let n = 0
         for (let i = 0; i <= k; i++) {
-            n += Math.sqrt(this.request[i].pri)
+            n += Math.sqrt(this.requests[i].pri)
         }
         return Math.pow(n/(T0+k+1), 2)
     },
