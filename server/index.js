@@ -31,9 +31,9 @@ let scheduler = {
 app.get('/data', (req, res, next) => {
 
 
-    res.once('close', () => {
+    res.once('end', () => {
         scheduler.pop()
-        console.log('closed')
+        console.log('end')
     })
 
     next()
