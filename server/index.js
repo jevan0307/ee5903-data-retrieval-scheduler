@@ -32,6 +32,10 @@ app.get('/bandwidth', (req, res) => {
         res.send({
             log: bwMonitor.log
         })
+    } else {
+        res.send({
+            error: 'Invalid parameter'
+        })
     }
 })
 
