@@ -8,11 +8,39 @@ app = express()
 
 app.use(nocache())
 
+let scheduler = {
+    isSending: false,
+    requests: [],
+    pop: function () {
+        this.requests.sort((a, b) => b.pri - a.pri)
+        return this.requests.splice(0, 1)
+    },
+    insert: function (res, pri, data) {
+        this.requests.push({
+            res: res,
+            pri: pri,
+            data: data
+        })
+    },
+    send: function () {
+        if (this.requests.length > 0　&& !this.isSending) {
+            this.isSending = true
+            let req = this.pop()
+            req.res.send(req.data)
+            this.isSending = false
+            this.send()
+        }
+    }
+}
+
 app.get('/data', (req, res) => {
     let dataSize = req.param('size')
+    let pri = req.param('price') || 0
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
-    res.json(data)
+
+    scheduler.push(res, pri, data)
+    scheduler.send()
 })
 
 app.get('/bandwidth', (req, res) => {
