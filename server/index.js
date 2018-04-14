@@ -29,8 +29,7 @@ let scheduler = {
 }
 
 app.get('/data', (req, res, next) => {
-    let pri = req.param('price') || 0
-    scheduler.push(res, pri)
+
 
     res.once('close', () => {
         scheduler.pop()
@@ -40,12 +39,13 @@ app.get('/data', (req, res, next) => {
     next()
 }, (req, res) => {
     let dataSize = req.param('size')
-
+    let pri = req.param('price') || 0
+    scheduler.push(res, pri)
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
 
-    console.log('start')
     while (pri > scheduler.maxPrice() + 1e-7);
+    console.log('start')
     res.send(data)
 })
 
