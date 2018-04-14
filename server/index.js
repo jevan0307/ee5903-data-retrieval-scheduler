@@ -28,28 +28,25 @@ let scheduler = {
     }
 }
 
-app.get('/data', (req, res, next) => {
-
-
-    res.once('finish', () => {
-        scheduler.pop()
-        console.log('end')
-    })
-
-    next()
-}, (req, res) => {
+let isSend = true
+app.get('/data', (req, res) => {
     let dataSize = req.param('size')
     let pri = req.param('price') || 0
-    scheduler.push(res, pri)
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
+    scheduler.push(res, pri)
+    setTimeout(() => {
+        while (pri < scheduler.maxPrice() - 1e-7 && isSend == false);
+        console.log('Send')
+        isSend = false;
+        scheduler.pop()
+        res.send(data)
+    }, 1000)
+})
 
-    while (pri < scheduler.maxPrice() - 1e-7) {
-        console.log(pri, scheduler.maxPrice())
-    }
-
-    console.log('start')
-    res.send(data)
+app.get('/data/finish', (req, res) => {
+    isSend = true
+    res.json({ success: true })
 })
 
 app.get('/bandwidth', (req, res) => {
