@@ -11,7 +11,7 @@ app.use(nocache())
 app.get('/data', (req, res) => {
     let dataSize = req.param('size')
 
-    let data = secureRandom.randomBuffer(dataSize)
+    let data = secureRandom.randomBuffer(parseInt(dataSize))
     res.send(data)
 })
 
