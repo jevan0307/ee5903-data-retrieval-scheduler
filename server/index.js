@@ -34,7 +34,8 @@ app.get('/data', (req, res) => {
 
     scheduler.push(res, pri)
     while (pri > scheduler.maxPrice() + 1e-7);
-    res.send(data, () => {
+    res.send(data)
+    res.on('finish', () => {
         scheduler.pop()
     })
 })
