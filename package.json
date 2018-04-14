@@ -16,7 +16,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "client": "node client/index.js",
+    "client": "node client/client.js",
     "server": "node server/server.js",
     "server:scheduler": "node server/server-scheduler.js"
   },
