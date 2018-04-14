@@ -2,7 +2,7 @@ let express = require('express')
 let path = require('path')
 let nocache = require('nocache')
 let secureRandom = require('secure-random')
-let bwMonitor = require('../lib/bandwidthMonitor')
+let bwMonitor = require(path.join(__dirname, '../lib/bandwidthMonitor'))
 
 app = express()
 

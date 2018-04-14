@@ -1,5 +1,6 @@
 let express = require('express')
-let bwMonitor = require('../lib/bandwidthMonitor')
+let path = require('path')
+let bwMonitor = require(path.join(__dirname, '../lib/bandwidthMonitor'))
 
 let app = express()
 
