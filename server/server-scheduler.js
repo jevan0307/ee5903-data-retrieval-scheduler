@@ -35,6 +35,7 @@ let scheduler = {
     send: function() {
         if (!this.isSending && this.requests.length > 0) {
             let k = this.requests.length - 1
+            let T0 = 20
 
             while (this.requests[k].pri < this.calcLambda(k, T0)) {
                 k = k - 1
