@@ -11,7 +11,7 @@ app.use(nocache())
 let scheduler = {
     isSending: false,
     requests: [],
-    calcLambda: function (k, o, T0) {
+    calcLambda: function (k, T0) {
         let n = 0
         for (let i = 0; i <= k; i++) {
             n += Math.sqrt(this.request[i].pri)
@@ -36,7 +36,7 @@ let scheduler = {
         if (!this.isSending && this.requests.length > 0) {
             let k = this.requests.length - 1
 
-            while (this.requests[k].pri < calcLambda(k, T0)) {
+            while (this.requests[k].pri < this.calcLambda(k, T0)) {
                 k = k - 1
             }
 
