@@ -43,6 +43,7 @@ let scheduler = {
                 k = k - 1
             }
 
+            console.log(`Optimal Kth:${k}`)
             this.requests.forEach((req, i) => {
                 if (i <= k) {
                     req.res.send(req.data)
