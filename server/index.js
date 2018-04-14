@@ -15,7 +15,7 @@ let scheduler = {
         this.requests.sort((a, b) => b.pri - a.pri)
         return this.requests.splice(0, 1)
     },
-    insert: function (res, pri, data) {
+    push: function (res, pri, data) {
         this.requests.push({
             res: res,
             pri: pri,

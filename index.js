@@ -27,7 +27,7 @@ let main = async () => {
             .query({ port: serverPort })
             .query({ n: 3 })
             .query({ timeout: 20000 })
-            .query({ size: 1024*1024*1.33 })
+            .query({ size: 1024*1024*1.25 })
             .then((result) => {
                 results.push(result)
             })
@@ -37,14 +37,14 @@ let main = async () => {
     await Promise.all(reqs)
 
     for (let i = 0; i < clientIP.length; i++) {
-        fs.writeFileSync(`../log/result-${i+1}.json`, results[i].text)
+        fs.writeFileSync(`./log/result-${i+1}.json`, results[i].text)
     }
 
     for (let i = 0; i < clientIP.length; i++) {
         let log = await request
             .get(`http://${clientIP[i]}:${clientPort}/bandwidth`)
             .query({ action: 'log' })
-        fs.writeFileSync(`../log/bw-${i+1}.json`, log.text)
+        fs.writeFileSync(`./log/bw-${i+1}.json`, log.text)
     }
 
     for (let i = 0; i < clientIP.length; i++) {
@@ -59,7 +59,7 @@ let main = async () => {
     let serverBW = await request
         .get(`http://${serverIP}:${serverPort}/bandwidth`)
         .query({ action: 'log' })
-    fs.writeFileSync(`../log/bw-server.json`, serverBW.text)
+    fs.writeFileSync(`./log/bw-server.json`, serverBW.text)
     await request
         .get(`http://${serverIP}:${serverPort}/bandwidth`)
         .query({ action: 'stop' })
