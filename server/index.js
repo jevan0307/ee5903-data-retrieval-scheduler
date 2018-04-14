@@ -34,10 +34,9 @@ app.get('/data', (req, res) => {
 
     scheduler.push(res, pri)
     while (pri > scheduler.maxPrice() + 1e-7);
-    console.log('start send')
-    res.send(data)
-    console.log('end')
-    scheduler.pop()
+    res.send(data, () => {
+        scheduler.pop()
+    })
 })
 
 app.get('/bandwidth', (req, res) => {
