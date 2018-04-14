@@ -26,6 +26,7 @@ app.get('/request', (req, res) => {
             agent
                 .get(`http://${ServerIP}:${ServerPort}/data`)
                 .query({ size: DataSize })
+                .query({ price: Math.random() })
                 .buffer(true)
                 .timeout({
                     deadline: Timeout,
