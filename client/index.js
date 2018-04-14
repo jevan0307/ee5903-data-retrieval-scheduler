@@ -1,6 +1,7 @@
 let express = require('express')
 let path = require('path')
 let bwMonitor = require('../lib/BandwidthMonitor')
+let superagent = require('superagent')
 
 let app = express()
 
