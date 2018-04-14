@@ -33,7 +33,7 @@ app.get('/request', (req, res) => {
                 })
                 .then(() => {
                     requestLog[i].end = new Date()
-                    agent.get(`http://${ServerIP}:${ServerPort}/data/finish`)
+                    return agent.get(`http://${ServerIP}:${ServerPort}/data/finish`)
                 })
         )
     }

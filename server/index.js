@@ -19,33 +19,38 @@ let scheduler = {
     pop: function () {
         return this.requests.splice(0, 1)
     },
-    push: function (res, pri) {
+    push: function (res, pri, data) {
         this.requests.push({
             res: res,
             pri: pri,
+            data: data
         })
         this.requests.sort((a, b) => b.pri - a.pri)
+    },
+    send: function() {
+        if (!this.isSending && this.requests.length > 0) {
+            let res = this.pop()
+            this.isSending = true
+            res.res.send(res.data)
+            console.log('Sending')
+        }
     }
 }
 
-let isSend = true
 app.get('/data', (req, res) => {
     let dataSize = req.param('size')
     let pri = req.param('price') || 0
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
-    scheduler.push(res, pri)
+    scheduler.push(res, pri, data)
     setTimeout(() => {
-        while (pri < scheduler.maxPrice() - 1e-7 && isSend == false);
-        console.log('Send')
-        isSend = false;
-        scheduler.pop()
-        res.send(data)
+        scheduler.send()
     }, 1000)
 })
 
 app.get('/data/finish', (req, res) => {
-    isSend = true
+    scheduler.isSending = false
+    scheduler.send()
     res.json({ success: true })
 })
 
