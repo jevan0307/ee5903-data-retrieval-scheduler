@@ -3,9 +3,11 @@ let path = require('path')
 let nocache = require('nocache')
 let secureRandom = require('secure-random')
 let bwMonitor = require('../lib/BandwidthMonitor')
+var endMw = require('express-end')
 
 app = express()
 
+app.use(endMw)
 app.use(nocache())
 
 let scheduler = {
@@ -26,20 +28,25 @@ let scheduler = {
     }
 }
 
-app.get('/data', (req, res) => {
-    let dataSize = req.param('size')
+app.get('/data', (req, res, next) => {
     let pri = req.param('price') || 0
+    scheduler.push(res, pri)
+
+    res.once('close', () => {
+        scheduler.pop()
+        console.log('closed')
+    })
+
+    next()
+}, (req, res) => {
+    let dataSize = req.param('size')
+
 
     let data = secureRandom.randomBuffer(parseInt(dataSize))
 
-    scheduler.push(res, pri)
-    while (pri > scheduler.maxPrice() + 1e-7);
     console.log('start')
+    while (pri > scheduler.maxPrice() + 1e-7);
     res.send(data)
-    res.on('finish', () => {
-        scheduler.pop()
-        console.log('end')
-    })
 })
 
 app.get('/bandwidth', (req, res) => {

@@ -6,6 +6,7 @@
   "dependencies": {
     "await-delay": "^1.0.0",
     "express": "^4.16.3",
+    "express-end": "0.0.8",
     "moment": "^2.22.0",
     "nocache": "^2.0.0",
     "secure-random": "^1.1.1",
