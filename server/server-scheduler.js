@@ -9,7 +9,6 @@ app = express()
 app.use(nocache())
 
 let scheduler = {
-    isSending: false,
     requests: [],
     calcLambda: function (k, T0) {
         let n = 0
@@ -33,9 +32,7 @@ let scheduler = {
         this.requests.sort((a, b) => b.pri - a.pri)
     },
     send: function() {
-        if (!this.isSending && this.requests.length > 0) {
-            this.isSending = true
-
+        if (this.requests.length > 0) {
             let k = this.requests.length - 1
             let T0 = 20
 
@@ -43,14 +40,15 @@ let scheduler = {
                 k = k - 1
             }
 
-            console.log(`Optimal Kth:${k}`)
+            console.log(`Number of requests in queue: ${this.requests.length}`)
+            console.log(`Optimal Kth:${k + 1}`)
             this.requests.forEach((req, i) => {
                 if (i <= k) {
                     req.res.send(req.data)
                 }
             })
             this.requests.splice(0, this.requests.length)
-            console.log('Sending')
+            console.log('Clear queue and Start sending')
         }
     }
 }
@@ -64,12 +62,6 @@ app.get('/data', (req, res) => {
     setTimeout(() => {
         scheduler.send()
     }, 1000)
-})
-
-app.get('/data/finish', (req, res) => {
-    scheduler.isSending = false
-    scheduler.send()
-    res.json({ success: true })
 })
 
 app.get('/bandwidth', (req, res) => {
