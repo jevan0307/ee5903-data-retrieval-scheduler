@@ -1,3 +1,13 @@
 {
-    "NetworkInterface": "enp0s3"
+    "NetworkInterface": "enp0s3",
+    "server": {
+        "port": "8080",
+        "scheduler": {
+            "T0": 12,
+            "Kth": -1
+        }
+    },
+    "client": {
+        "port": "7070"
+    }
 }

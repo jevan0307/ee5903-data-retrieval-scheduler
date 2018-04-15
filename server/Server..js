@@ -3,6 +3,7 @@ let path = require('path')
 let nocache = require('nocache')
 let secureRandom = require('secure-random')
 let bwMonitor = require('../lib/BandwidthMonitor')
+let config = require('../config')
 
 app = express()
 
@@ -47,6 +48,9 @@ app.get('/alive', (req, res) => {
     res.json({ alive: true })
 })
 
-app.listen('8080', () => {
-    console.log('Server is listening on port 8080')
+app.listen(config.server.port, (err) => {
+    if (err) {
+        console.log(err)
+    }
+    console.log(`Server is listening on port ${config.server.port}`)
 })

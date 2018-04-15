@@ -3,6 +3,7 @@ let path = require('path')
 let nocache = require('nocache')
 let secureRandom = require('secure-random')
 let bwMonitor = require('../lib/BandwidthMonitor')
+let config = require('../config')
 
 app = express()
 
@@ -33,15 +34,18 @@ let scheduler = {
     },
     send: function() {
         if (this.requests.length > 0) {
-            let k = this.requests.length - 1
-            let T0 = 20
+            let k = config.server.scheduler
+            let T0 = config.server.scheduler.T0
 
-            while (this.requests[k].pri < this.calcLambda(k, T0)) {
-                k = k - 1
+            if (k && k != -1) {
+                k = this.requests.length - 1
+                while (this.requests[k].pri < this.calcLambda(k, T0)) {
+                    k = k - 1
+                }
             }
 
             console.log(`Number of requests in queue: ${this.requests.length}`)
-            console.log(`Optimal Kth:${k + 1}`)
+            console.log(`Optimal Kth: ${k + 1}`)
             this.requests.forEach((req, i) => {
                 if (i <= k) {
                     req.res.send(req.data)
@@ -92,6 +96,9 @@ app.get('/alive', (req, res) => {
     res.json({ alive: true })
 })
 
-app.listen('8080', () => {
-    console.log('Server is listening on port 8080')
+app.listen(config.server.port, (err) => {
+    if (err) {
+        console.log(err)
+    }
+    console.log(`Server is listening on port ${config.server.port}`)
 })

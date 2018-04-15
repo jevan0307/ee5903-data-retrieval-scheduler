@@ -1,7 +1,8 @@
-let express = require('express')
 let path = require('path')
-let bwMonitor = require('../lib/BandwidthMonitor')
+let express = require('express')
 let superagent = require('superagent')
+let bwMonitor = require('../lib/BandwidthMonitor')
+let config = require('../config')
 
 let app = express()
 
@@ -85,8 +86,9 @@ app.get('/alive', (req, res) => {
     res.json({ alive: true })
 })
 
-app.listen('7070', (err) => {
-    if (err)
-        throw(err)
-    console.log('Client is listening on port 7070')
+app.listen(config.client.port, (err) => {
+    if (err) {
+        console.log(err)
+    }
+    console.log(`Client is listening on port ${config.client.port}`)
 })
