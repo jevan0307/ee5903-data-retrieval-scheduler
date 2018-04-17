@@ -25,9 +25,9 @@ let main = async () => {
             .get(`http://${clientIP[i]}:${clientPort}/request`)
             .query({ ip: serverIP })
             .query({ port: serverPort })
-            .query({ n: 3 })
-            .query({ timeout: 20000 })
-            .query({ size: 1024*1024*5 })
+            .query({ n: 3 })   // number of requests
+            .query({ timeout: 20000 })  // deadline of each request (ms)
+            .query({ size: 1024*1024*5 }) // request data size (byte)
             .then((result) => {
                 results.push(result)
             })
