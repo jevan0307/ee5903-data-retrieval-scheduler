@@ -32,8 +32,12 @@ app.get('/request', (req, res) => {
                 .timeout({
                     deadline: Timeout,
                 })
-                .then(() => {
-                    requestLog[i].end = new Date()
+                .then((res) => {
+                    if (res.body.error) {
+                        requestLog[i].end = -1
+                    } else {
+                        requestLog[i].end = new Date()
+                    }
                 })
         )
     }

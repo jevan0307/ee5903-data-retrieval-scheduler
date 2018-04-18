@@ -102,7 +102,7 @@ GET /bandwidth?action=<action>&interval=<interval>
 * `interval`<Number>: sampling interval for bandwidth monitor in ms. It is an optional parameter and it would be 1000ms if not provided
 
 ### Data Retrieval Task
-This APIs send N data retrieval request simultaneously to the server and responds the status of each request.
+This API send N data retrieval request simultaneously to the server and responds the status of each request. The willingness to pay of each request is uniformly distributed, it is hard coded in `client/Client.js`.
 ```
 GET /request?ip=<ip>&port=<port>&n=<n>&timeout=<timeout>&size=<size>
 ```
@@ -112,3 +112,56 @@ GET /request?ip=<ip>&port=<port>&n=<n>&timeout=<timeout>&size=<size>
 * `n`<Number>: Number of data retrieval requests
 * `timeout`<Number>: Deadline of the request in ms. The connection from client to server will be forced to close after the deadline. The status/logs of the requests will be responded after the deadline
 * `size`<Number>: Size of the data retrieved from the server in bytes.
+
+
+## Server (CCH)
+To run the server without the scheduler, execute the following command in the project folder:
+```
+npm run server
+```
+This program runs a http server in the host. By default, it listens to port 8080. You can change it in the configuration file
+
+For the server with the scheduler, execute:
+```
+npm run server:scheduler
+```
+The parameter `T_0` and `K_{th}` can be set in the config file. The `T_0` is required, and `K_{th}` is optional.
+
+### APIs
+The server service contains bandwidth monitor API and data retrieval task API. You can use tools like `curl` or `wget` to access these API to run the simulation through HTTP request.
+
+### Heartbeat
+Check if the HTTP server is alive
+```
+GET /alive
+```
+
+### Bandwidth Monitor
+This API controls the on/off of the bandwidth monitor. You can also get the bandwidth usage logs from this API.
+```
+GET /bandwidth?action=<action>&interval=<interval>
+```
+#### Parameters
+* `action`<'start'|'stop'|'reset'|'log'>: Action for the bandwidth monitor
+    * `start`: Start/Resume monitor the bandwidth usage of network interface defined in the config
+    * `stop`: Stop the bandwidth monitor
+    * `reset`: Clear the stored log
+    * `log`: Get the log of bandwidth monitor. It will respond a JSON with a array of RX, TX and timestamp of the log. RX and TX is the total transmitted bytes of the network interface in MB.
+* `interval`<Number>: sampling interval for bandwidth monitor in ms. It is an optional parameter and it would be 1000ms if not provided
+
+### Data Resource
+This API responds request with a specified size of random binary data. For the server with scheduler, the request will be put to the queue and performed the scheduling algorithm.
+```
+GET /data?size=<size>&price=<price>
+```
+#### Parameters
+* `size`<Number>: The size of the requested data in byte
+* `price`<Number>: The willingness to pay for the request. Optional, it would be 0 by default for server with scheduler if it is not provided
+
+## Scripts
+There is a script `scripts/SendRequest.js` for the simulation. You can run the script in any other host to send the command to the machines and perform the simulation. The log will be stored in `log/`. In the script, it goes through the following steps:
+1. Start bandwidth monitor in server and 3 clients
+2. Start data retrieval in 3 clients. The request task contains 3 parallel requests, each request for 5 MB data, and the timeout is set to 20 second.
+3. Wait until all the requests are responded or after the timeout period. Write the status of requests to the log file.
+4. Get the bandwidth monitor log from server and clients, write the log to the log file.
+5. Stop and reset the bandwidth monitor in server and clients.

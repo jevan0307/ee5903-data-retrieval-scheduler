@@ -49,6 +49,8 @@ let scheduler = {
             this.requests.forEach((req, i) => {
                 if (i <= k) {
                     req.res.send(req.data)
+                } else {
+                    req.res.send({ error: 'Request is rejected' })
                 }
             })
             this.requests.splice(0, this.requests.length)
