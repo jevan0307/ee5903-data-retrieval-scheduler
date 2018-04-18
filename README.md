@@ -165,3 +165,9 @@ There is a script `scripts/SendRequest.js` for the simulation. You can run the s
 3. Wait until all the requests are responded or after the timeout period. Write the status of requests to the log file.
 4. Get the bandwidth monitor log from server and clients, write the log to the log file.
 5. Stop and reset the bandwidth monitor in server and clients.
+
+To run the script, execute the file with Node.js:
+```
+node ./scripts/SendRequest.js
+```
+You may want to configure the IP and port of server and clients. They are hard coded in the script, please change the value of variables `serverIP`, `serverPort`, `clientIP`, and `clientPort` by yourself. 
